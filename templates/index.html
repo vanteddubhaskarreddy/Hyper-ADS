@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hyper ADS - AI-Powered Advertising Recommendations</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/print.css') }}" media="print">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Agent Explanation Modal -->
+    <div id="agent-intro-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div class="agent-intro">
+                <div class="intro-header">
+                    <i class="fas fa-robot agent-icon-large"></i>
+                    <h2>Meet Your AI Advertising Team</h2>
+                </div>
+                <div class="agent-cards">
+                    <div class="agent-intro-card">
+                        <i class="fas fa-chart-line"></i>
+                        <h3>Data Analyst</h3>
+                        <p>Scans local events, analyzes attendance patterns, and identifies opportunities for customer engagement.</p>
+                    </div>
+                    <div class="agent-intro-card">
+                        <i class="fas fa-cloud-sun"></i>
+                        <h3>Weather Analyst</h3>
+                        <p>Evaluates weather conditions to predict customer behavior and optimize your marketing timing.</p>
+                    </div>
+                    <div class="agent-intro-card">
+                        <i class="fas fa-lightbulb"></i>
+                        <h3>Marketing Strategist</h3>
+                        <p>Creates personalized advertising recommendations based on real-time data analysis.</p>
+                    </div>
+                </div>
+                <div class="agent-intro-benefits">
+                    <h3>Your daily marketing advantage:</h3>
+                    <ul>
+                        <li><i class="fas fa-check-circle"></i> Fresh recommendations every morning</li>
+                        <li><i class="fas fa-check-circle"></i> Weather-aware advertising strategies</li>
+                        <li><i class="fas fa-check-circle"></i> Event-based customer targeting</li>
+                        <li><i class="fas fa-check-circle"></i> Daily emails for 7 days straight</li>
+                    </ul>
+                </div>
+                <button id="start-experience" class="primary-button">Get Started</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add this right after the agent-intro-modal div in your index.html -->
+    <div id="policy-modal" class="modal">
+        <div class="modal-content policy-modal-content">
+            <span class="close-modal">&times;</span>
+            <div id="policy-content" class="policy-content">
+                <!-- Content will be inserted by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-bullhorn"></i>
+            </div>
+            <h1>Hyper ADS</h1>
+            <p class="tagline">Your AI Advertising Agent Team, Always On Duty</p>
+            <p class="daily-notice">We'll send fresh marketing strategies to your email every morning for a full week!</p>
+        </header>
+        
+        <main>
+            <div class="card">
+                <form id="recommender-form">
+                    <div class="form-group">
+                        <label for="business-name">Business Name</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-building"></i>
+                            <input type="text" id="business-name" placeholder="Enter your business name" required maxlength="100">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="business-type">Business Type</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-store"></i>
+                            <input type="text" id="business-type" placeholder="e.g. Restaurant, Retail, Services" required maxlength="100">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="business-email">Email Address (Optional)</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" id="business-email" placeholder="For receiving your daily recommendations for 7 days" maxlength="100">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="postal-code">Postal Code</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <input type="text" id="postal-code" value="66213" placeholder="Your business location" maxlength="20">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group half">
+                            <label for="latitude">Latitude</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-map-pin"></i>
+                                <input type="number" id="latitude" placeholder="e.g. 38.9041" step="0.0000001" min="-90" max="90" required>
+                                <!-- <div class="input-note">Will be formatted to 4 decimal places</div> -->
+                            </div>
+                        </div>
+                        
+                        <div class="form-group half">
+                            <label for="longitude">Longitude</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-map-pin"></i>
+                                <input type="number" id="longitude" placeholder="e.g. -94.6898" step="0.0000001" min="-180" max="180" required>
+                                <!-- <div class="input-note">Will be formatted to 4 decimal places</div> -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="location-helper">
+                        <button type="button" id="use-location" class="helper-button">
+                            <i class="fas fa-location-arrow"></i> Use My Current Location
+                        </button>
+                        <div id="location-status" class="location-status"></div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" id="generate-btn">
+                            <i class="fas fa-magic"></i>
+                            Generate Recommendations
+                        </button>
+                    </div>
+                </form>
+            </div>
+            
+            <div id="loading" class="hidden">
+                <div class="ai-processing-container">
+                    <h3>Your AI Advertising Team is Working...</h3>
+                    
+                    <div class="agent-workflow">
+                        <div class="agent-card" id="data-analyst">
+                            <div class="agent-icon">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <div class="agent-info">
+                                <h4>Data Analyst</h4>
+                                <div class="agent-status">Collecting local events data...</div>
+                                <div class="progress-bar"><div class="progress"></div></div>
+                            </div>
+                        </div>
+                        
+                        <div class="connection-line">
+                            <div class="data-point"></div>
+                        </div>
+                        
+                        <div class="agent-card" id="weather-analyst">
+                            <div class="agent-icon">
+                                <i class="fas fa-cloud-sun"></i>
+                            </div>
+                            <div class="agent-info">
+                                <h4>Weather Analyst</h4>
+                                <div class="agent-status">Waiting for data...</div>
+                                <div class="progress-bar"><div class="progress"></div></div>
+                            </div>
+                        </div>
+                        
+                        <div class="connection-line">
+                            <div class="data-point"></div>
+                        </div>
+                        
+                        <div class="agent-card" id="marketing-strategist">
+                            <div class="agent-icon">
+                                <i class="fas fa-lightbulb"></i>
+                            </div>
+                            <div class="agent-info">
+                                <h4>Marketing Strategist</h4>
+                                <div class="agent-status">Waiting for analysis...</div>
+                                <div class="progress-bar"><div class="progress"></div></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="insights-preview">
+                        <div class="insight-item" id="events-insight">
+                            <span class="insight-label">Events found:</span>
+                            <span class="insight-value">--</span>
+                        </div>
+                        <div class="insight-item" id="weather-insight">
+                            <span class="insight-label">Weather conditions:</span>
+                            <span class="insight-value">--</span>
+                        </div>
+                        <div class="insight-item" id="strategy-insight">
+                            <span class="insight-label">Strategy focus:</span>
+                            <span class="insight-value">--</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="results" class="hidden">
+                <h2>Your Advertising Recommendations</h2>
+                <div id="recommendations-content" class="results-card"></div>
+                
+                <div class="save-actions">
+                    <button id="save-pdf" class="action-button">
+                        <i class="fas fa-file-pdf"></i> Save as PDF
+                    </button>
+                    <button id="email-results" class="action-button">
+                        <i class="fas fa-envelope"></i> Email Results
+                    </button>
+                </div>
+            </div>
+            
+            <div id="error-message" class="hidden">
+                <i class="fas fa-exclamation-circle"></i>
+                <p>Sorry, we encountered an error while generating your recommendations.</p>
+            </div>
+        </main>
+        
+        <!-- Update the footer in index.html -->
+        <footer>
+            <div class="footer-content">
+                <p>&copy; 2025 Hyper ADS | <a href="#" id="privacy-policy-link">Privacy Policy</a> | <a href="#" id="terms-service-link">Terms of Service</a></p>
+                <div class="social-links">
+                    <a href="http://www.linkedin.com/in/v-b-r/" target="_blank" class="social-link">
+                        <i class="fab fa-linkedin"></i> Connect with us
+                    </a>
+                </div>
+            </div>
+            <div class="reopen-demo">
+                <button id="reopen-intro" class="text-button">
+                    <i class="fas fa-question-circle"></i> What does Hyper ADS do?
+                </button>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Floating action button -->
+    <div class="floating-help">
+        <button id="show-agent-info" class="float-button">
+            <i class="fas fa-robot"></i>
+        </button>
+        <div class="float-label">Learn about your AI team</div>
+    </div>
+    
+    <script src="{{ url_for('static', filename='js/animation.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/intro.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
