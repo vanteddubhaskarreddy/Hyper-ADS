@@ -49,7 +49,7 @@ Instead of relying on intuition or complicated marketing platforms, small busine
 │                                                                │
 │  ┌─────────────────┐  ┌─────────────────┐  ┌────────────────┐  │
 │  │   Data Analyst  │  │ Weather Analyst │  │    Marketing   │  │
-│  │      Agent      │──▶│      Agent      │──▶│  Strategist   │  │
+│  │      Agent      │─▶│      Agent     │─▶│  Strategist    │  │
 │  └─────────────────┘  └─────────────────┘  └────────────────┘  │
 │                                                                │
 └──────────────────────────────┬─────────────────────────────────┘
